@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -20,8 +21,45 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2gM-Y1-lSM">
+                                <rect key="frame" x="132" y="70" width="97" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="go"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0q4-Wy-cUp">
+                                <rect key="frame" x="132" y="172" width="97" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SXB-NO-ITn">
+                                <rect key="frame" x="142" y="261" width="77" height="30"/>
+                                <state key="normal" title="Log/Sign In"/>
+                                <connections>
+                                    <action selector="SummitButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7uT-5Y-gNg"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="0q4-Wy-cUp" firstAttribute="top" secondItem="2gM-Y1-lSM" secondAttribute="bottom" constant="72" id="2d0-fZ-s5N"/>
+                            <constraint firstItem="0q4-Wy-cUp" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="116" id="3Ie-c6-gEJ"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="0q4-Wy-cUp" secondAttribute="trailing" constant="130" id="Dd2-EF-PvO"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="2gM-Y1-lSM" secondAttribute="trailing" constant="130" id="RI4-bo-Ao5"/>
+                            <constraint firstItem="SXB-NO-ITn" firstAttribute="top" secondItem="0q4-Wy-cUp" secondAttribute="bottom" constant="59" id="TEj-5a-8a1"/>
+                            <constraint firstItem="2gM-Y1-lSM" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="116" id="c7X-tb-qAw"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="SXB-NO-ITn" secondAttribute="trailing" constant="140" id="czY-5m-EKZ"/>
+                            <constraint firstItem="SXB-NO-ITn" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="126" id="eaJ-v6-oev"/>
+                            <constraint firstItem="2gM-Y1-lSM" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="50" id="t5o-XI-lLe"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="SXB-NO-ITn" secondAttribute="bottom" constant="376" id="yuJ-gY-9hy"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="passWord" destination="0q4-Wy-cUp" id="qQi-DI-ZzY"/>
+                        <outlet property="userName" destination="2gM-Y1-lSM" id="ond-C2-o6i"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

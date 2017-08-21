@@ -9,6 +9,12 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet var userName: UITextField!
+    @IBOutlet var passWord: UITextField!
+    @IBAction func SummitButton(_ sender: AnyObject) {
+        
+        print("hey\(userName.text!) \(passWord.text!)")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

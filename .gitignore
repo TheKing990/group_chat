@@ -1,4 +1,5 @@
 Podfile
-	Podfile.lock
-	Pods/
-	chat_group.xcodeproj/
+Podfile.lock
+Pods/*
+chat_group.xcodeproj/*
+server/node_modules/*

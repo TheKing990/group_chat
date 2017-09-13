@@ -12,7 +12,7 @@ class ViewController: UIViewController, UITextFieldDelegate{
     @IBOutlet var userName: UITextField!
     @IBOutlet var passWord: UITextField!
     @IBAction func SummitButton(_ sender: AnyObject) {
-        
+        /*
         print("hey \(userName.text!) \(passWord.text!)")
         
         if let name = userName.text {
@@ -27,6 +27,21 @@ class ViewController: UIViewController, UITextFieldDelegate{
         } else {
             
         }
+ */
+        guard let email = userName.text, userName.text != "", let pass = passWord.text, passWord.text != "" else {
+            
+            return
+        }
+        
+        AuthService.instance.registerUser(email: email, password: pass, completion: { Success in
+            if Success {
+                print("user was sen")
+            } else {
+                OperationQueue.main.addOperation {
+                    print("there was a problem")
+                }
+            }
+        })
        
         
 

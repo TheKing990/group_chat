@@ -14,9 +14,9 @@ class initViewController: UIViewController{
         UserDefaults.standard.removeObject(forKey: "Username")
         UserDefaults.standard.removeObject(forKey: "Password")
         
-        if let name =  UserDefaults.standard.object(forKey: "Username"){
+        if  UserDefaults.standard.object(forKey: "Username") != nil{
             
-            if let pass  = UserDefaults.standard.object(forKey: "Password"){
+            if  UserDefaults.standard.object(forKey: "Password") != nil{
                 self.performSegue(withIdentifier: "hasUsername", sender: nil)
 
             }

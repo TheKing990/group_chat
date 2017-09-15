@@ -1,3 +1,6 @@
+create database my_chat;
+use my_chat;
+
 CREATE Table groups(
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(20),
@@ -9,7 +12,7 @@ CREATE Table groups(
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(100),
-  passaword VARCHAR(100)
+  password VARCHAR(100),
   created_at TIMESTAMP default NOW()
 
 );

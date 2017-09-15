@@ -2,6 +2,23 @@ let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
 
+var mysql = require('mysql');
+let myconfig = require('./sql/config.js');
+console.log('my databases is' + myconfig.myFunc1().database);
+var connection = mysql.createConnection({
+  host     :myconfig.myFunc1().host,
+  user     : myconfig.myFunc1().user,
+  password : myconfig.myFunc1().password,
+  database : myconfig.myFunc1().database
+});
+connection.connect();
+connection.query('', function (error, results, fields) {
+  if (error) throw error;
+  console.log('The solution is: ', results[0].username);
+  console.log('The solution is: ', results[0].password);
+});
+
+connection.end();
 
 app.use(bodyParser.json());
 

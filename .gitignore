@@ -3,3 +3,5 @@ Podfile.lock
 Pods/*
 chat_group.xcodeproj/*
 server/node_modules/*
+server/sql/config.js
+chat_group.xcworkspace/*

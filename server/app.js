@@ -1,9 +1,11 @@
 let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
-
 var mysql = require('mysql');
 let myconfig = require('./sql/config.js');
+var passport = require('passport');
+var LocalStrategy = require('passport-local');
+
 console.log('my databases is' + myconfig.myFunc1().database);
 var pool  = mysql.createPool({
   host     : myconfig.myFunc1().host,
@@ -11,6 +13,12 @@ var pool  = mysql.createPool({
   password : myconfig.myFunc1().password,
   database : myconfig.myFunc1().database
 });
+
+app.use(require('express-session')({
+  secret: "Once again i win",
+  resave: false,
+  saveUninitialized: false
+}));
 
 pool.getConnection(function(err, connection) {
   // connected! (unless `err` is set)
@@ -47,13 +55,13 @@ app.post("/api/account/add",(req,res)=>{
 
   pool.getConnection(function(err, connection) {
     let mypost = [[req.body.username, req.body.password] ];
-  if (err) throw err;
-  console.log("Connected!");
-  var sql = "INSERT INTO users (username, password) values ?";
-  connection.query(sql,[mypost], function (err, result) {
     if (err) throw err;
-    console.log("1 record inserted");
-  });
+    console.log("Connected!");
+    var sql = "INSERT INTO users (username, password) values ?";
+    connection.query(sql,[mypost], function (err, result) {
+      if (err) throw err;
+      console.log("1 record inserted");
+    });
 
 
 });

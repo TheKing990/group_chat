@@ -20,6 +20,7 @@ let Post_Groups = "\(myURL)/groups/add"
 
 let Get_Account = "\(myURL)/account"
 let Post_Account = "\(myURL)/account/add"
+let Post_logIn = "\(myURL)/logIn"
 let DEFAULTS_EMAIL = "Username"
 
 func return_url(mystring:String)->String{

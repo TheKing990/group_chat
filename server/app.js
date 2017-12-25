@@ -71,6 +71,10 @@ app.post("/api/account/add",(req,res)=>{
 
 });
 
+app.post("api/logIn", (req, res)=>{
+
+});
+
 app.get("/api/favorite_groups",(req, res)=>{
 
 });

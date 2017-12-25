@@ -9,9 +9,28 @@
 import UIKit
 
 class ViewController: UIViewController, UITextFieldDelegate{
+    
+    @IBAction func LogInBtn(_ sender: Any) {
+        print ("hey you want to log in ")
+    }
     @IBOutlet var userName: UITextField!
     @IBOutlet var passWord: UITextField!
-    @IBAction func SummitButton(_ sender: AnyObject) {
+    @IBAction func signupBtn(_ sender: Any) {
+        print("sign up");
+    }
+    
+   
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+        
+        
+        
+        
+    }
+
+}
         /*
         print("hey \(userName.text!) \(passWord.text!)")
         
@@ -28,6 +47,8 @@ class ViewController: UIViewController, UITextFieldDelegate{
             
         }
  */
+    
+    /*
         guard let email = userName.text, userName.text != "", let pass = passWord.text, passWord.text != "" else {
             
             return
@@ -47,7 +68,9 @@ class ViewController: UIViewController, UITextFieldDelegate{
 
 
     }
-
+    @IBAction func SignUpbtn(_ sender: Any) {
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -73,4 +96,5 @@ class ViewController: UIViewController, UITextFieldDelegate{
     }
 
 }
+ */
 

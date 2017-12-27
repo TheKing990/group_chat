@@ -1,5 +1,3 @@
-
-
 let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
@@ -8,6 +6,7 @@ let myconfig = require('./sql/config.js');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 const jwt = require('jsonwebtoken');
+const passwordHash = require('password-hash');
 
 console.log('my databases is' + myconfig.myFunc1().database);
 var pool  = mysql.createPool({
@@ -18,7 +17,7 @@ var pool  = mysql.createPool({
 });
 
 
-
+/*
 pool.getConnection(function(err, connection) {
   // connected! (unless `err` is set)
   connection.query('select * from  users;', function (error, results, fields) {
@@ -29,7 +28,7 @@ pool.getConnection(function(err, connection) {
     console.log('The solution is: ', results[0].password);
   });
 });
-
+*/
 
 app.use(bodyParser.json());
 
@@ -37,7 +36,43 @@ app.get("/",function(req, res){
   res.send("is on!");
 })
 
-app.post("api/logIn", (req, res)=>{
+app.post("/api/account/login", (req, res)=>{
+  console.log("login req")
+  const myuser = [req.body.username];
+
+  pool.getConnection((err, connection) => {
+    const query = "select username, password from users where username = ?";
+    connection.query(query,myuser,(err, result) => {
+
+      if (err){
+        throw err;
+      }
+
+      if(result.length === 0){
+        res.json({"error":"not found"});
+      }
+      else if (result.length > 1){
+        res.json({"error":"more than 1"});
+      }
+      else if (result.length ===1 ){
+        let mypass = result[0].password;
+        console.log(result);
+        if (passwordHash.verify(req.body.password, mypass)){
+          res.json({"error":"none", "pass":"true"});
+        }
+        else {
+          res.json({"error":"none", "pass":"false"});
+        }
+        
+      }
+      else {
+        res.json({"error":"unknown"});
+      }
+
+    });
+
+
+  });
 
 });
 
@@ -51,7 +86,7 @@ app.post("/api/account/signup",(req,res)=>{
 
   pool.getConnection(function(err, connection) {
     let myusername = [req.body.username];
-    let mypost = [[req.body.username, req.body.password]];
+    
     
     if( typeof req.body.username === 'undefined' ) {
       // foo could get resolved and it's defined
@@ -72,6 +107,8 @@ app.post("/api/account/signup",(req,res)=>{
         res.json({"error": "found"});
       }
       else {
+        var myhastpass = passwordHash.generate(req.body.password);
+        let mypost = [[req.body.username, myhastpass]];
         connection.query(sql,[mypost], function (err, result) {
           if(err){
             console.log("there is an adding ");

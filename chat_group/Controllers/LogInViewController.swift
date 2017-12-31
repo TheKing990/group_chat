@@ -7,27 +7,34 @@
 //
 
 import UIKit
+import Alamofire
 
 class LogInViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var logUsername: UITextField!
-    
     @IBOutlet var logPassword: UITextField!
+    
+  
+    
     @IBAction func logInBTN(_ sender: Any) {
+        print("click")
+        if   logUsername.text == "" || logPassword.text == " " {
+            return;
+        }
+            
+        AuthService.instance.logInUser(username: logUsername.text!, password: logPassword.text!)
+        return
+        
+        
     }
+   
     override func viewDidLoad() {
         super.viewDidLoad()
+       
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
 
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+  
 
     // MARK: - Table view data source
 

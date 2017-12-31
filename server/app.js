@@ -1,3 +1,5 @@
+
+
 let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
@@ -38,41 +40,59 @@ app.get("/",function(req, res){
 
 app.post("/api/account/login", (req, res)=>{
   console.log("login req")
-  const myuser = [req.body.username];
+  //console.log(req.body.headers["authorization"]);
+ // console.log(req.headers);
+ //verifyUser(req.body.username, req.body.password);
+//res.json({"hey": "you"});
+
+ const myuser = [req.body.username];
+
 
   pool.getConnection((err, connection) => {
-    const query = "select username, password from users where username = ?";
-    connection.query(query,myuser,(err, result) => {
+    const query = "select * from users where username = ?";
+    connection.query(query,myuser,(err, result) =>
+     {
 
       if (err){
         throw err;
       }
 
       if(result.length === 0){
-        res.json({"error":"not found"});
+       
       }
-      else if (result.length > 1){
-        res.json({"error":"more than 1"});
+       else if (result.length > 1){
+        isverify = false;
       }
-      else if (result.length ===1 ){
-        let mypass = result[0].password;
+        else if (result.length ===1 ){
+          let mypass = result[0].password;
         console.log(result);
-        if (passwordHash.verify(req.body.password, mypass)){
-          res.json({"error":"none", "pass":"true"});
-        }
-        else {
-          res.json({"error":"none", "pass":"false"});
-        }
         
-      }
-      else {
-        res.json({"error":"unknown"});
-      }
 
-    });
-
+       if (passwordHash.verify(req.body.password, mypass)){
+        console.log("is ogood");
+         isverify = true;
+         let data = JSON.stringify(result)
+         console.log(data);
+         res.json(data);
+        }
+       else {
+        console.log("is badd");
+          res.json({"error": "invalid"});
+        }
+      
+    }
+    else {
+     
+    }
 
   });
+
+
+});
+
+  
+
+
 
 });
 
@@ -159,6 +179,7 @@ app.get("/api/groups/comments",(req, res)=>{
 app.post("/api/groups/comments/add",(req, res)=>{
 
 });
+
 
 
 app.listen(3000, function(){

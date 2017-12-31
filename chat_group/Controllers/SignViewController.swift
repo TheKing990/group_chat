@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class SignViewController: UIViewController, UITextFieldDelegate {
 
@@ -15,8 +16,11 @@ class SignViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var SignPassword: UITextField!
     @IBAction func signbtn(_ sender: Any) {
     }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
 
         // Do any additional setup after loading the view.
     }

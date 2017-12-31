@@ -7,8 +7,10 @@
 //
 
 import Foundation
+import Alamofire
 
 class AuthService {
+    
     
     
     
@@ -41,6 +43,42 @@ class AuthService {
         set {
             defaults.set(newValue, forKey: DEFAULTS_EMAIL)
         }
+    }
+    
+    func logInUser(username: String, password: String){
+      
+        let json = ["username": username, "password": password]
+       
+        
+       
+        let token = "TOkenQWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+        let headers = ["Authorization": "bearer \(token)",
+            "Content-Type": "application/json"]
+      
+  
+        //print(json);
+        var urlComponent = URLComponents(string: Post_logIn)!
+        var request = URLRequest(url: urlComponent.url!)
+        request.httpMethod = "Post"
+        request.httpBody = try? JSONSerialization.data(withJSONObject: json)
+        request.allHTTPHeaderFields = headers
+      
+        Alamofire.request(request).responseJSON { response in
+            /*
+            if let json = response.result.value {
+                let JSON = json as! NSDictionary
+                print(JSON)
+            }
+ */debugPrint(response)
+        }
+ 
+        /*
+        Alamofire.request(Post_logIn,method: .post, headers: headers)
+            .responseJSON { response in
+                debugPrint(response)
+        }
+ */
+        return
     }
     
     

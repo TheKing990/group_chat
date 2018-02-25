@@ -40,11 +40,7 @@ app.get("/",function(req, res){
 
 app.post("/api/account/login", (req, res)=>{
   console.log("login req")
-  //console.log(req.body.headers["authorization"]);
- // console.log(req.headers);
- //verifyUser(req.body.username, req.body.password);
-//res.json({"hey": "you"});
-
+ 
  const myuser = [req.body.username];
 
 
@@ -54,35 +50,49 @@ app.post("/api/account/login", (req, res)=>{
      {
 
       if (err){
-        throw err;
+        console.log("err!")
+        res.json({"error": "invalid input"});
       }
 
       if(result.length === 0){
+        res.json({"error": "no User or pass"});
        
       }
-       else if (result.length > 1){
-        isverify = false;
-      }
-        else if (result.length ===1 ){
-          let mypass = result[0].password;
+       
+      else if (result.length ===1 )
+      {
+        let mypass = result[0].password;
         console.log(result);
         
 
-       if (passwordHash.verify(req.body.password, mypass)){
-        console.log("is ogood");
-         isverify = true;
-         let data = JSON.stringify(result)
-         console.log(data);
-         res.json(data);
+        if (passwordHash.verify(req.body.password, mypass))
+        {
+           console.log("is ogood");
+           isverify = true;
+           let row = JSON.stringify(result)
+           let data = JSON.parse(row);
+
+          const user = {
+            id: data[0].id,
+            username: data[0].username
+           }
+
+          jwt.sign({user: user}, 'mysecrectkey', (err, token) => {
+            console.log("token ogood");
+            res.json({"success": "valid","token": token});
+
+
+          });
         }
        else {
-        console.log("is badd");
+          console.log("is badd");
           res.json({"error": "invalid"});
         }
       
     }
     else {
-     
+      
+        isverify = false; 
     }
 
   });

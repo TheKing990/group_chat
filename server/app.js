@@ -1,7 +1,6 @@
 
 
 let express = require('express');
-let app = express();
 let bodyParser = require('body-parser');
 var mysql = require('mysql');
 let myconfig = require('./sql/config.js');
@@ -9,6 +8,9 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local');
 const jwt = require('jsonwebtoken');
 const passwordHash = require('password-hash');
+const routes = require('./routes/routes');
+
+let app = express();
 
 console.log('my databases is' + myconfig.myFunc1().database);
 var pool  = mysql.createPool({
@@ -33,10 +35,8 @@ pool.getConnection(function(err, connection) {
 */
 
 app.use(bodyParser.json());
+app.use("/",routes);
 
-app.get("/",function(req, res){
-  res.send("is on!");
-})
 
 app.post("/api/account/login", (req, res)=>{
   console.log("login req")

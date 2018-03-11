@@ -64,12 +64,15 @@ class AuthService {
         request.allHTTPHeaderFields = headers
       
         Alamofire.request(request).responseJSON { response in
-            /*
+            
             if let json = response.result.value {
                 let JSON = json as! NSDictionary
-                print(JSON)
+                let mytoken = JSON["token"]!
+                print (mytoken)
+                self.defaults.set(mytoken, forKey: "User_Token")
+                self.isAuthenticated = true
             }
- */debugPrint(response)
+ //debugPrint(response)
         }
  
         /*

@@ -1,11 +1,7 @@
 
 
-let express = require('express');
-let bodyParser = require('body-parser');
-//var mysql = require('mysql');
-let myconfig = require('./sql/config.js');
-var passport = require('passport');
-var LocalStrategy = require('passport-local');
+const express = require('express');
+const bodyParser = require('body-parser');
 const routes = require('./routes/routes');
 
 let app = express();

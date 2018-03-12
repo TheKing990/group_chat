@@ -6,3 +6,4 @@ server/node_modules/*
 server/sql/config.js
 chat_group.xcworkspace/*
 server/npm-debug.log
+server/.eslintrc

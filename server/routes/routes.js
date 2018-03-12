@@ -33,9 +33,9 @@ router.get('/api/',(req, res) =>{
 router.post("/api/account/signup",(req,res)=>{
   pool.getConnection(function(err, connection) {
 
-    let myusername = [req.body.username];
+    let myemail = [req.body.email];
 
-    if( typeof req.body.username === 'undefined' ) {
+    if( typeof req.body.email === 'undefined' ) {
       // foo could get resolved and it's defined
       res.json({"error": "underfined"})
       return;
@@ -44,10 +44,10 @@ router.post("/api/account/signup",(req,res)=>{
       console.log("there is an error");
        throw err;
     }
-    let q = "select username from users where username = ?";
+    let q = "select email from users where email = ?";
     var sql = "INSERT INTO users (username, password, email) values ?";
 
-    connection.query(q, myusername, function (err, result) {
+    connection.query(q, myemail, function (err, result) {
 
       if (err){ throw err};
       
@@ -64,7 +64,7 @@ router.post("/api/account/signup",(req,res)=>{
             throw err;
           }
            console.log("1 record inserted");
-           connection.query(q, myusername,(err, result)=>{
+           connection.query(q, myemail,(err, result)=>{
 
               let row = JSON.stringify(result)
               let data = JSON.parse(row);
@@ -87,73 +87,50 @@ router.post("/api/account/signup",(req,res)=>{
 
 
 router.post("/api/account/login", (req, res)=>{
-    console.log("login req");
 
+  const myemail = [req.body.email];
+  
+  pool.getConnection((err, connection) => {
+    const query = "select * from users where email = ?";
 
-   
-   const myuser = [req.body.username];
-  
-  
-    pool.getConnection((err, connection) => {
-      const query = "select * from users where username = ?";
-      connection.query(query,myuser,(err, result) =>
-       {
-  
-        if (err){
-          console.log("err!")
-          res.json({"error": "invalid input"});
-        }
-  
-        if(result.length === 0){
-          res.json({"error": "no User or pass"});
-         
-        }
-         
-        else if (result.length ===1 )
-        {
-          let mypass = result[0].password;
-          console.log(result);
-          
-  
-          if (passwordHash.verify(req.body.password, mypass))
-          {
-             console.log("is ogood");
-             isverify = true;
-             let row = JSON.stringify(result)
-             let data = JSON.parse(row);
-  
-            const user = {
-              id: data[0].id,
-              username: data[0].username
-             }
-  
-            jwt.sign({user: user}, 'mysecrectkey', (err, token) => {
-              console.log("token ogood");
-              res.json({"success": "valid","token": token});
-  
-  
-            });
-          }
-         else {
-            console.log("is badd");
-            res.json({"error": "invalid"});
-          }
-        
+    connection.query(query,myemail,(err, result) => {
+
+      if (err){
+        throw err;
       }
-      else {
+
+      if (result.length === 1){
         
-          
+
+        let mypass = result[0].password;
+        
+
+        if (passwordHash.verify(req.body.password, mypass)){
+
+          let row = JSON.stringify(result);
+          let data = JSON.parse(row);
+
+          const user = {
+            id: data[0].id,
+            username: data[0].username,
+            email: data[0].email
+          };
+
+          jwt.sign({user: user}, 'mysecrectkey', (err, token) => {
+
+            res.json({"success": "valid","token": token});
+          });
+
+        } else{
+          res.json({"error": "invalid username or password"});
+        }
+
+      } else{
+        res.json({"error": "invalid username or password"});
       }
   
+     });
     });
-  
-  
-  });
-  
-    
-  
-  
-  
   });
   
   

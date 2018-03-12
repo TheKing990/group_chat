@@ -1,14 +1,13 @@
 const express = require('express');
+const passwordHash = require('password-hash');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
-var mysql = require('mysql');
-
-const myconfig = require('../sql/config');
-
 const connection = require('../sql/connection');
 const pool = connection;
 
 
 
+/*
 router.get('/api/',(req, res) =>{
 
     pool.getConnection(function(err, connection) {
@@ -29,12 +28,68 @@ router.get('/api/',(req, res) =>{
       });
 
 });
+*/
+
+router.post("/api/account/signup",(req,res)=>{
+  pool.getConnection(function(err, connection) {
+
+    let myusername = [req.body.username];
+
+    if( typeof req.body.username === 'undefined' ) {
+      // foo could get resolved and it's defined
+      res.json({"error": "underfined"})
+      return;
+    } 
+    if (err){
+      console.log("there is an error");
+       throw err;
+    }
+    let q = "select username from users where username = ?";
+    var sql = "INSERT INTO users (username, password, email) values ?";
+
+    connection.query(q, myusername, function (err, result) {
+
+      if (err){ throw err};
+      
+      if (result.length > 0){
+        res.json({"error": "User_Found"});
+      }
+      else {
+
+        let myhastpass = passwordHash.generate(req.body.password);
+        let mypost = [[req.body.username, myhastpass, req.body.email]];
+
+        connection.query(sql,[mypost], function (err, result) {
+          if(err){
+            throw err;
+          }
+           console.log("1 record inserted");
+           connection.query(q, myusername,(err, result)=>{
+
+              let row = JSON.stringify(result)
+              let data = JSON.parse(row);
+ 
+              const user = {
+               id: data[0].id,
+               username: data[0].username,
+               email: data[0].email
+              }
+ 
+              jwt.sign({user: user}, 'mysecrectkey', (err, token) => {
+                res.json({"success": "valid","token": token});
+              });
+           });
+        });
+      }
+    });
+  });
+});
 
 
 router.post("/api/account/login", (req, res)=>{
     console.log("login req");
 
-console.log('my databases is' +myconfig.myFunc1().database);
+
    
    const myuser = [req.body.username];
   
@@ -87,7 +142,7 @@ console.log('my databases is' +myconfig.myFunc1().database);
       }
       else {
         
-          isverify = false; 
+          
       }
   
     });
@@ -102,52 +157,6 @@ console.log('my databases is' +myconfig.myFunc1().database);
   });
   
   
-  router.post("/api/account/signup",(req,res)=>{
-    console.log("hey");
-  
-    console.log("the user name is " + req.body.username);
-  
-  
-  
-    pool.getConnection(function(err, connection) {
-      let myusername = [req.body.username];
-      
-      
-      if( typeof req.body.username === 'undefined' ) {
-        // foo could get resolved and it's defined
-        res.json({"error": "underfined"})
-        return;
-      } 
-  
-      if (err){
-        console.log("there is an error");
-         throw err;
-      }
-      let q = "select username from users where username = ?";
-      var sql = "INSERT INTO users (username, password) values ?";
-      connection.query(q,myusername, function (err, result) {
-        if (err) throw err;
-        //console.log("1 record inserted");
-        if (result.length > 0){
-          res.json({"error": "found"});
-        }
-        else {
-          var myhastpass = passwordHash.generate(req.body.password);
-          let mypost = [[req.body.username, myhastpass]];
-          connection.query(sql,[mypost], function (err, result) {
-            if(err){
-              console.log("there is an adding ");
-            }
-             console.log("1 record inserted");
-             res.json({"error": "none"});
-          });
-        }
-      });
-  
-  
-    });
-  
-  });
   
   router.get("/api/groups",(req,res)=>{
     res.send("this get the groups");

@@ -6,8 +6,6 @@ let bodyParser = require('body-parser');
 let myconfig = require('./sql/config.js');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
-const jwt = require('jsonwebtoken');
-const passwordHash = require('password-hash');
 const routes = require('./routes/routes');
 
 let app = express();

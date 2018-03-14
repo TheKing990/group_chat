@@ -34,6 +34,7 @@ router.post("/api/account/signup",(req,res)=>{
   pool.getConnection(function(err, connection) {
 
     let myemail = [req.body.email];
+    let my_username = [req.body.username];
 
     if( typeof req.body.email === 'undefined' ) {
       // foo could get resolved and it's defined
@@ -46,6 +47,7 @@ router.post("/api/account/signup",(req,res)=>{
     }
     let q = "select email from users where email = ?";
     var sql = "INSERT INTO users (username, password, email) values ?";
+    let search_username = 'SELECT username FROM users WHERE username =?';
 
     connection.query(q, myemail, function (err, result) {
 
@@ -55,16 +57,23 @@ router.post("/api/account/signup",(req,res)=>{
         res.json({"error": "User_Found"});
       }
       else {
+        
+        connection.query(search_username,my_username,(err, result)=>{
 
-        let myhastpass = passwordHash.generate(req.body.password);
-        let mypost = [[req.body.username, myhastpass, req.body.email]];
-
-        connection.query(sql,[mypost], function (err, result) {
-          if(err){
+          if (err) {
             throw err;
           }
-           console.log("1 record inserted");
-           connection.query(q, myemail,(err, result)=>{
+          if (result === 0){
+          let myhastpass = passwordHash.generate(req.body.password);
+          let mypost = [[req.body.username, myhastpass, req.body.email]];
+
+          connection.query(sql,[mypost], function (err, result)
+           {
+            if(err){
+             throw err;
+            }
+            console.log("1 record inserted");
+            connection.query(q, myemail,(err, result)=>{
 
               let row = JSON.stringify(result)
               let data = JSON.parse(row);
@@ -75,11 +84,19 @@ router.post("/api/account/signup",(req,res)=>{
                email: data[0].email
               }
  
-              jwt.sign({user: user}, 'mysecrectkey', (err, token) => {
+              jwt.sign({user: user}, 'mysecrectkey', (err, token) =>
+               {
                 res.json({"success": "valid","token": token});
-              });
-           });
-        });
+               });
+            });
+          });
+          } else{
+            res.json({
+              "error": "username taken"
+            });
+          }
+
+        });        
       }
     });
   });
@@ -157,13 +174,15 @@ router.post("/api/account/login", (req, res)=>{
   router.get("/api/account",(req,res)=>{
     res.send("this get the groups");
   });
-  
+  /*
+  may not need
   router.get("/api/favorite_groups",(req, res)=>{
   
   });
   router.post("/api/favorite_groups/add", (req, res)=>{
   
   });
+  */
   router.get("/api/groups/comments",(req, res)=>{
   
   });

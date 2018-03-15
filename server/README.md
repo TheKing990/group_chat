@@ -1,6 +1,9 @@
 Things needed
 Server
     [X]Finish the Sign UP and the Log In
+    [] Friends Routes
+        []add friends
+        []Get friends
     [] Group Routes
         [] Create Queries
         [] GET Route

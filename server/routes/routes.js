@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const connection = require('../sql/connection');
 const pool = connection;
+const verify_t = require('../middleware/mw');
 
 
 
@@ -35,12 +36,14 @@ router.post("/api/account/signup",(req,res)=>{
 
     let myemail = [req.body.email];
     let my_username = [req.body.username];
+    console.log(my_username);
 
-    if( typeof req.body.email === 'undefined' ) {
+    if( typeof req.body.email === 'undefined' || typeof req.body.username === 'undefined' ) {
       // foo could get resolved and it's defined
       res.json({"error": "underfined"})
       return;
     } 
+
     if (err){
       console.log("there is an error");
        throw err;
@@ -58,36 +61,39 @@ router.post("/api/account/signup",(req,res)=>{
       }
       else {
         
-        connection.query(search_username,my_username,(err, result)=>{
+        connection.query(search_username,my_username,(err, username_result)=>{
+          console.log(username_result.length);
 
           if (err) {
             throw err;
           }
-          if (result === 0){
-          let myhastpass = passwordHash.generate(req.body.password);
-          let mypost = [[req.body.username, myhastpass, req.body.email]];
 
-          connection.query(sql,[mypost], function (err, result)
-           {
-            if(err){
-             throw err;
-            }
-            console.log("1 record inserted");
-            connection.query(q, myemail,(err, result)=>{
+          if (username_result == 0)
+          {
+            let myhastpass = passwordHash.generate(req.body.password);
+            let mypost = [[req.body.username, myhastpass, req.body.email]];
 
-              let row = JSON.stringify(result)
-              let data = JSON.parse(row);
- 
-              const user = {
-               id: data[0].id,
-               username: data[0].username,
-               email: data[0].email
+            connection.query(sql,[mypost], function (err, result)
+            {
+              if(err){
+              throw err;
               }
+              console.log("1 record inserted");
+              connection.query(q, myemail,(err, result)=>{
+
+                let row = JSON.stringify(result)
+                let data = JSON.parse(row);
  
-              jwt.sign({user: user}, 'mysecrectkey', (err, token) =>
-               {
-                res.json({"success": "valid","token": token});
-               });
+                const user = {
+                 id: data[0].id,
+                 username: data[0].username,
+                email: data[0].email
+                }
+ 
+                jwt.sign({user: user}, 'mysecrectkey', (err, token) =>
+                {
+                  res.json({"success": "valid","token": token});
+                });
             });
           });
           } else{
@@ -149,6 +155,29 @@ router.post("/api/account/login", (req, res)=>{
      });
     });
   });
+
+  router.get('/api/friends', verify_t,(req, res)=>{
+    jwt.verify(req.token, 'mysecrectkey',(err, auth_data)=>{
+
+      if (err){
+        res.sendStatus(403)
+
+      } else{
+        console.log(auth_data);
+        get_friends_query = 'select users.id, users.username, users.email from users inner join friends on friends.friend_id = users.id and friends.user_id = ?;';
+        user_id = [auth_data.user.id];
+        console.log("the user id is " + user_id);
+        connection.query(get_friends_query, user_id,(err, result)=>{
+          let row = JSON.stringify(result);
+          let data = JSON.parse(row);
+          res.json(data);
+
+        });
+      }
+
+    });
+
+  });
   
   
   
@@ -157,19 +186,11 @@ router.post("/api/account/login", (req, res)=>{
   });
   router.post("/api/groups/add",(req,res)=>{
     console.log("jlkajfla");
-  /*
-    pool.getConnection(function(error, connection){
-      let myusernmae  =req.body.username, req.body.passwo;
-      if (err) throw err;
-      var q = "Select username from users where username = ?";
-      connection.query(1, )
-  
-  
-    });
-  */
-  
-  
   });
+  
+
+  
+  
   
   router.get("/api/account",(req,res)=>{
     res.send("this get the groups");

@@ -7,3 +7,4 @@ server/sql/config.js
 chat_group.xcworkspace/*
 server/npm-debug.log
 server/.eslintrc
+server/sql/add_stuff.sql

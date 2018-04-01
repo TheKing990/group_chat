@@ -178,8 +178,45 @@ router.post("/api/account/login", (req, res)=>{
     });
 
   });
-  
-  
+  //get the conversation of this two people, if they have not talk then add it to the converstion table
+  router.post("/api/send/message", verify_t,(req, res)=>{
+    jwt.verify(req.token,'mysecrectkey',(err, auth_data)=>{ 
+
+      if (err){
+        res.sendStatus(403)
+
+      } else{
+        item_q = [[auth_data.user.id, req.body.user_two]];
+        console.log("the user is " + auth_data.user.id + " and the second user is " + req.body.user_two);
+        query = "INSERT INTO message_c (user_one, user_two) values (?) ;";
+
+        connection.query(query, item_q,(err, result)=>{
+          if (err){
+           console.log("first err")
+            throw err;}
+          message_conv_id = result.insertId;
+          console.log ("the message is " + req.body.message + " the time is  and the id of the conv is " + message_conv_id);
+         
+          
+          items2 = [[req.body.message, req.body.user_two, message_conv_id]];
+          query2 = "insert into conversation_reply (reply, user_id_fk, c_id_fk ) values (?);";
+          connection.query(query2, items2,(err, result)=>{
+            if (err) throw err;
+            res.json({
+              "message": "send"
+            })
+          });
+
+
+
+
+        });
+
+      }
+
+    });
+
+  });
   
   router.get("/api/groups",(req,res)=>{
     res.send("this get the groups");

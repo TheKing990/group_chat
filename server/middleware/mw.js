@@ -1,7 +1,7 @@
 function verify_token(req, res, next){
 
     const bearer = req.headers['authorization'];
-    console.log(bearer);
+    //sconsole.log(bearer);
 
     if (typeof bearer !== 'undefined'){
         

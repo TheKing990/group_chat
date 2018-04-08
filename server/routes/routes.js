@@ -187,31 +187,67 @@ router.post("/api/account/login", (req, res)=>{
 
       } else{
         item_q = [[auth_data.user.id, req.body.user_two]];
-        console.log("the user is " + auth_data.user.id + " and the second user is " + req.body.user_two);
+        users_q = [auth_data.user.id, req.body.user_two, req.body.user_two,auth_data.user.id];
+        console.log("op is "+auth_data.user.id + "and other is " +req.body.user_two);
+       
         query = "INSERT INTO message_c (user_one, user_two) values (?) ;";
-
-        connection.query(query, item_q,(err, result)=>{
+        con_query =  "select id from message_c where (user_one = ? and user_two = ?) or (user_one = ? and user_two = ?);";
+        let  message_conv_id = ' ';
+        
+        query2 = "insert into conversation_reply (reply, user_id_fk, c_id_fk ) values (?);";
+        
+        connection.query(con_query, users_q,(err, results)=>{
           if (err){
-           console.log("first err")
-            throw err;}
-          message_conv_id = result.insertId;
-          console.log ("the message is " + req.body.message + " the time is  and the id of the conv is " + message_conv_id);
+            console.log("select suff")
+            throw err;
+          }
+          let stringify = JSON.stringify(results);
+          let data = JSON.parse(stringify);
          
+          console.log("the lenght is " + data.length);
           
-          items2 = [[req.body.message, req.body.user_two, message_conv_id]];
-          query2 = "insert into conversation_reply (reply, user_id_fk, c_id_fk ) values (?);";
-          connection.query(query2, items2,(err, result)=>{
-            if (err) throw err;
-            res.json({
-              "message": "send"
-            })
-          });
+
+          if (data.length == 0){
+
+            
+            connection.query(query, item_q,(err, result)=>{
+              if (err){
+              console.log("first err")
+                throw err;}
+
+            message_conv_id = result.insertId;
+            
+               
+                
+              console.log ("the message is " + req.body.message + " the time is  and the id of the conv is " + message_conv_id);
+              items2 = [[req.body.message, req.body.user_two, message_conv_id]];
+          
+              connection.query(query2, items2,(err, result)=>{
+                if (err) throw err;
+                res.json({
+                  "message": "send"
+                })
+              });
+  
+            });
+
+          } else{
+            console.log(data[0].id);
+            message_conv_id = data[0].id;
+            items2 = [[req.body.message, req.body.user_two, message_conv_id]];
+            connection.query(query2, items2,(err, result)=>{
+              if (err) throw err;
+              res.json({
+                "message": "send"
+              })
+            });
+          }
+
+          
 
 
-
-
+          
         });
-
       }
 
     });

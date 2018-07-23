@@ -10,3 +10,5 @@ server/.eslintrc
 server/sql/add_stuff.sql
 server/sql/create_groups.sql
 server/sql/create_groups.sql
+server/routes/every_m.sql
+server/routes/every_con.sql
